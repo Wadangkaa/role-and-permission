@@ -1,6 +1,8 @@
 import { ApiError } from '../utils/ApiError.js'
 import { User } from '../models/user.model.js'
 import { ApiResponse } from '../utils/ApiResponse.js'
+import { asyncHandler } from '../utils/asynchandler.js'
+import { cookieOptions } from '../utils/cookieoptions.js'
 
 const loginUser = asyncHandler(async (req, res) => {
   const { username, password } = req.body

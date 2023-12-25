@@ -1,7 +1,6 @@
-import { Response } from 'express'
-import { RequestWithUser } from '../interfaces/requestWithUser.interface.js'
 import { ApiResponse } from '../utils/ApiResponse.js'
 import { Post } from '../models/post.model.js'
+import { asyncHandler } from '../utils/asynchandler.js'
 
 export const getAllPosts = asyncHandler(async (req, res) => {
   const posts = await Post.find()

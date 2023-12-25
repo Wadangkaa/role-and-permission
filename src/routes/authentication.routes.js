@@ -3,7 +3,7 @@ import {
   loginUser,
   logoutUser,
 } from "../controllers/authentication.controller.js"
-import { verifyJWT } from "../middlewares/auth-middleware.js"
+import { verifyJWT } from "../middlewares/auth.middleware.js"
 
 const router = express.Router()
 
