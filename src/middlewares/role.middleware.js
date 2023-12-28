@@ -1,18 +1,25 @@
 import { ApiError } from '../utils/apiError.js'
 import { asyncHandler } from '../utils/asynchandler.js'
 
-export function checkRole(role) {
-  return (req, res, next) => {
+export function checkRoles(...roles) {
+  return asyncHandler((req, res, next) => {
+    // fetching authenticated user
     const user = req.user
 
+    console.log(user, roles)
+    // validating user
     if (user && user.roles) {
-      if (user.roles.includes(role)) {
-        next() // User has the required role
+      // fetching user's roles
+      const userRoles = user.roles.map((role) => role.name)
+
+      // validating roles
+      if (roles.every((role) => userRoles.includes(role))) {
+        next()
       } else {
-        res.status(403).send('Role-based permission denied')
+        throw new ApiError(403, 'Role-based permission denied')
       }
     } else {
-      res.status(401).send('Unauthorized')
+      throw new ApiError(401, 'Unauthorized')
     }
-  }
+  })
 }

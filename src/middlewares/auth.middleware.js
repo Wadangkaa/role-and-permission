@@ -50,14 +50,7 @@ const getAuthenticatedUser = async (decodedToken) => {
         from: 'roles',
         localField: 'roleId',
         foreignField: '_id',
-        as: 'role',
-      },
-    },
-    {
-      $addFields: {
-        role: {
-          $first: '$role',
-        },
+        as: 'roles',
       },
     },
     {
@@ -89,7 +82,7 @@ const getAuthenticatedUser = async (decodedToken) => {
       $project: {
         _id: 1,
         username: 1,
-        role: {
+        roles: {
           _id: 1,
           name: 1,
         },
