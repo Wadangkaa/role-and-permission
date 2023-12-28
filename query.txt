@@ -1,0 +1,48 @@
+[
+  {
+    $match: {
+      username: 'admin'
+    }
+  },
+  {
+    $lookup: {
+      from: 'rolepermissions',
+      localField: 'roleId',
+      foreignField: 'roleId',
+      as: 'permissions',
+      pipeline: [
+        {
+          $lookup: {
+            from: 'permissions',
+            localField: 'permissionId',
+            foreignField: '_id',
+            as: 'permission'
+          }
+        },
+        {
+          $addFields: {
+            permission: {
+              $first: '$permission'
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    $project: {
+      username: 1,
+      roleId: 1,
+      permissions: {
+        $map: {
+          input: '$permissions',
+          as: 'permission',
+          in: {
+            _id: '$$permission._id',
+            name: '$$permission.permission.name'
+          }
+        }
+      }
+    }
+  }
+]

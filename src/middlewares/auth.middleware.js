@@ -1,7 +1,8 @@
 import { User } from '../models/user.model.js'
-import { ApiError } from '../utils/ApiError.js'
+import { ApiError } from '../utils/apiError.js'
 import jwt from 'jsonwebtoken'
 import { asyncHandler } from '../utils/asynchandler.js'
+import mongoose from 'mongoose'
 
 const verifyJWT = asyncHandler(async (req, res, next) => {
   try {
@@ -19,9 +20,12 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
 
     // fetching authorized user
-    const user = await User.findById(decodedToken?._id).select(
-      '-password -refreshToken'
-    )
+    // const user = await User.findById(decodedToken?._id).select(
+    //   '-password -refreshToken'
+    // )
+
+    // fetching authorized user with its role and permissions
+    const user = await getAuthenticatedUser(decodedToken)
 
     // validating user
     if (!user) {
@@ -30,11 +34,80 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
 
     // adding user to request object
     req.user = user
-
     next()
   } catch (error) {
     throw new ApiError(401, error.message || 'invalid access token')
   }
 })
+
+const getAuthenticatedUser = async (decodedToken) => {
+  const authUserAsArray = await User.aggregate([
+    {
+      $match: { _id: new mongoose.Types.ObjectId(decodedToken?._id) },
+    },
+    {
+      $lookup: {
+        from: 'roles',
+        localField: 'roleId',
+        foreignField: '_id',
+        as: 'role',
+      },
+    },
+    {
+      $addFields: {
+        role: {
+          $first: '$role',
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: 'rolepermissions',
+        localField: 'roleId',
+        foreignField: 'roleId',
+        as: 'permissions',
+        pipeline: [
+          {
+            $lookup: {
+              from: 'permissions',
+              localField: 'permissionId',
+              foreignField: '_id',
+              as: 'permission',
+            },
+          },
+          {
+            $addFields: {
+              permission: {
+                $first: '$permission',
+              },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        username: 1,
+        role: {
+          _id: 1,
+          name: 1,
+        },
+        permissions: {
+          $map: {
+            input: '$permissions',
+            as: 'permission',
+            in: {
+              _id: '$$permission.permission._id',
+              name: '$$permission.permission.name',
+            },
+          },
+        },
+      },
+    },
+  ])
+
+  return authUserAsArray[0]
+}
 
 export { verifyJWT }

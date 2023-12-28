@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+import { Role } from './role.model.js'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 

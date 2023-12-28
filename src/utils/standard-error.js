@@ -4,6 +4,8 @@ function errorFormate() {
         return res.status(error.statusCode).json({
             status: error.statusCode,
             message: error.message,
+            stack: error.stack,
+            error,
         })
     }
 }

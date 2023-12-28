@@ -1,4 +1,6 @@
 import mongoose, { Schema } from "mongoose"
+import { Role } from "./role.model.js"
+import { Permission } from "./permission.model.js"
 
 const rolePermissionSchema = new Schema(
   {
@@ -14,4 +16,4 @@ const rolePermissionSchema = new Schema(
   { timestamps: true }
 )
 
-export const Role = mongoose.model("Role", rolePermissionSchema)
+export const RolePermission = mongoose.model("RolePermission", rolePermissionSchema)
