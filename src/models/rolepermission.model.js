@@ -1,19 +1,22 @@
-import mongoose, { Schema } from "mongoose"
-import { Role } from "./role.model.js"
-import { Permission } from "./permission.model.js"
+import mongoose, { Schema } from 'mongoose'
+import { Role } from './role.model.js'
+import { Permission } from './permission.model.js'
 
 const rolePermissionSchema = new Schema(
   {
     roleId: {
       type: Schema.Types.ObjectId,
-      ref: "Role",
+      ref: 'Role',
     },
     permissionId: {
       type: Schema.Types.ObjectId,
-      ref: "Permission",
+      ref: 'Permission',
     },
   },
   { timestamps: true }
 )
 
-export const RolePermission = mongoose.model("RolePermission", rolePermissionSchema)
+export const RolePermission = mongoose.model(
+  'RolePermission',
+  rolePermissionSchema
+)

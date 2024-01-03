@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose"
+import mongoose, { Schema } from 'mongoose'
 
 const permissionSchema = new Schema(
   {
@@ -7,4 +7,4 @@ const permissionSchema = new Schema(
   { timestamps: true }
 )
 
-export const Permission = mongoose.model("Permission", permissionSchema)
+export const Permission = mongoose.model('Permission', permissionSchema)
