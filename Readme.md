@@ -1,6 +1,6 @@
-# Role and permissions in node js
+# Role and permissions in express js
 
-global code to implement role and permissions in node
+global code to implement role and permissions in express app
 
 ## About this
 
