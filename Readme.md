@@ -4,7 +4,7 @@ global code to implement role and permissions in node
 
 ## About this
 
-This project gives endpoints of creating roles, provides you middlewares that can be used in every porject that needs to implement role and permissions
+This project gives endpoints for creating roles, provides you middlewares that can be used in every project that needs to implement role and permissions
 
 ## Features
 
@@ -12,4 +12,4 @@ This project gives endpoints of creating roles, provides you middlewares that ca
 - permissions checking middlewares
 - authorization checking middlewares
 - login and logout controllers
-- roles creatiion controllers
+- roles creation controllers
