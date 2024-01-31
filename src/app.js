@@ -5,9 +5,21 @@ import permissionRouter from './routes/permission.routes.js'
 import roleRouter from './routes/role.routes.js'
 import authenticationRouter from './routes/authentication.routes.js'
 import { errorFormate } from './utils/standard-error.js'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 const app = express()
-app.use(express.json())
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true,
+  })
+)
+
+app.use(express.json({ limit: '16kb' }))
+app.use(express.urlencoded({ extended: true, limit: '16kb' }))
+app.use(express.static('public'))
+app.use(cookieParser())
 
 app.get('/', (req, res) => {
   res.send('Hello World! how are you?')
