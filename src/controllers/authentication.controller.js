@@ -3,6 +3,7 @@ import { User } from '../models/user.model.js'
 import { ApiResponse } from '../utils/ApiResponse.js'
 import { asyncHandler } from '../utils/asynchandler.js'
 import { cookieOptions } from '../utils/cookieoptions.js'
+import mongoose from 'mongoose'
 
 const loginUser = asyncHandler(async (req, res) => {
   const { username, password } = req.body
@@ -28,9 +29,36 @@ const loginUser = asyncHandler(async (req, res) => {
 
   // generating tokens
   const accessToken = user.generateAccessToken()
+  console.log('id', user._id)
 
   // remove password and refreshToken from user to send response
-  const loggedInUser = await User.findById(user._id).select('-password')
+  const loggedInUser = await User.aggregate([
+    {
+      $match: { _id: user._id },
+    },
+    {
+      $lookup: {
+        from: 'roles',
+        localField: 'roleIds',
+        foreignField: '_id',
+        as: 'roles',
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        id: '$_id',
+        username: '$username',
+        roles: {
+          $map: {
+            input: '$roles',
+            as: 'role',
+            in: '$$role.name',
+          },
+        },
+      },
+    },
+  ])
 
   // sending response
   return res
@@ -40,7 +68,7 @@ const loginUser = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         {
-          loggedInUser,
+          loggedInUser: loggedInUser[0],
           accessToken,
         },
         'User created successfully'

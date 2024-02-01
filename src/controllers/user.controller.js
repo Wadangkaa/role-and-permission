@@ -5,10 +5,10 @@ import { ApiError } from '../utils/apiError.js'
 
 export const registerUser = asyncHandler(async (req, res) => {
   // get user details from frontend
-  const { username, password, roleId } = req.body
+  const { username, password, roleIds } = req.body
 
   // validation -not empty
-  if ([username, password, roleId].some((field) => field?.trim() === '')) {
+  if ([username, password, roleIds].some((field) => field?.trim() === '')) {
     throw new ApiError(400, 'all fields are required')
   }
 
@@ -22,7 +22,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   const user = await User.create({
     username: username.toLowerCase(),
     password,
-    roleId,
+    roleIds,
   })
 
   // remove password and refresh token field from response
