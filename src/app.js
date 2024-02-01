@@ -4,9 +4,9 @@ import postRouter from './routes/post.routes.js'
 import permissionRouter from './routes/permission.routes.js'
 import roleRouter from './routes/role.routes.js'
 import authenticationRouter from './routes/authentication.routes.js'
-import { errorFormate } from './utils/standard-error.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import { globalErrorHandler } from './controllers/error.controller.js'
 
 const app = express()
 app.use(
@@ -31,6 +31,6 @@ app.use('/api/v1/posts', postRouter)
 app.use('/api/v1/permissions', permissionRouter)
 app.use('/api/v1/roles', roleRouter)
 
-app.use(errorFormate())
+app.use(globalErrorHandler)
 
 export default app
